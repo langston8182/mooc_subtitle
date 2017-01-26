@@ -1,0 +1,16 @@
+CREATE TABLE fichier
+(
+	id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	nom VARCHAR(255) NOT NULL,
+	path VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE ligne
+(
+	id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	traduit VARCHAR(1023),
+	original VARCHAR(1023) NOT NULL,
+	fk_fichier int NOT NULL
+);
+
+ALTER TABLE ligne ADD FOREIGN KEY(fk_fichier) REFERENCES fichier(id);
