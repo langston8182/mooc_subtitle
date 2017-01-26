@@ -8,6 +8,11 @@ package com.subtitlor.beans;
 public class Fichier {
 
 	/**
+	 * Extension SRT.
+	 */
+	private static final String SRT_EXTENSION = "SRT";
+
+	/**
 	 * Identifiant du fichier.
 	 */
 	private int id;
@@ -36,7 +41,10 @@ public class Fichier {
 	 * 
 	 * @param nom Le nom.
 	 */
-	public void setNom(String nom) {
+	public void setNom(String nom) throws BeanException {
+		if (!nom.substring(nom.lastIndexOf(".") + 1).toUpperCase().equals(SRT_EXTENSION)) {
+			throw new BeanException("Le fichier téléchargé n'est pas au bon format.");
+		}
 		this.nom = nom;
 	}
 

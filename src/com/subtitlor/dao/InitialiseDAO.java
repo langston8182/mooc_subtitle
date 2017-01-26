@@ -9,7 +9,9 @@ public interface InitialiseDAO {
 
 	/**
 	 * Lance l'initialisation de la base de données.
+	 * 
+	 * @throws DAOException Si une {@link DAOException} est lancée.
 	 */
-	public void init();
+	public void init() throws DAOException;
 	
 }

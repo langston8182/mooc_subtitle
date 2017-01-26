@@ -3,6 +3,7 @@ package com.subtitlor.servlets;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+import com.subtitlor.dao.DAOException;
 import com.subtitlor.dao.DAOFactory;
 import com.subtitlor.dao.InitialiseDAO;
 
@@ -33,7 +34,11 @@ public class InitialiseBDD extends HttpServlet {
 		daoFactory = DAOFactory.getInstance();
 		
 		initialiseDAO = daoFactory.getInitialiseDAO();
-		initialiseDAO.init();
+		try {
+			initialiseDAO.init();
+		} catch (DAOException ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 }

@@ -33,7 +33,7 @@ public class LigneDAOImpl implements LigneDAO {
 	}
 	
 	@Override
-	public void ajouter(Ligne ligne) {
+	public void ajouter(Ligne ligne) throws DAOException {
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
 		
@@ -45,13 +45,14 @@ public class LigneDAOImpl implements LigneDAO {
 			preparedStatement.setString(3, ligne.getOriginal());
 			
 			preparedStatement.executeUpdate();
+			connexion.commit();
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			throw new DAOException("Impossible de communiquer avec la basse de données.");
 		}
 	}
 
 	@Override
-	public List<Ligne> recupererTout(Fichier fichier) {
+	public List<Ligne> recupererTout(Fichier fichier) throws DAOException {
 		List<Ligne> lignes = new ArrayList<>();
 		
 		Connection connexion = null;
@@ -76,14 +77,13 @@ public class LigneDAOImpl implements LigneDAO {
 				ligne.setTraduit(traduit);
 			}
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			throw new DAOException("Impossible de communiquer avec la basse de données.");
 		}
-		
 		return lignes;
 	}
 
 	@Override
-	public Ligne recuperer(int id) {
+	public Ligne recuperer(int id) throws DAOException {
 		Ligne ligne = null;
 		
 		Connection connexion = null;
@@ -105,14 +105,13 @@ public class LigneDAOImpl implements LigneDAO {
 				ligne.setTraduit(traduit);
 			}
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			throw new DAOException("Impossible de communiquer avec la basse de données.");
 		}
-		
 		return ligne;
 	}
 
 	@Override
-	public void sauvegarder(Ligne ligne) {
+	public void sauvegarder(Ligne ligne) throws DAOException {
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
 		
@@ -122,13 +121,14 @@ public class LigneDAOImpl implements LigneDAO {
 			preparedStatement.setInt(1, ligne.getId());
 			
 			preparedStatement.executeUpdate();
+			connexion.commit();
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			throw new DAOException("Impossible de communiquer avec la basse de données.");
 		}
 	}
 
 	@Override
-	public List<Ligne> recuperer(Fichier fichier) {
+	public List<Ligne> recuperer(Fichier fichier) throws DAOException {
 		List<Ligne> lignes = new ArrayList<>();
 		
 		Connection connexion = null;
@@ -164,9 +164,8 @@ public class LigneDAOImpl implements LigneDAO {
 				}
 			}
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			throw new DAOException("Impossible de communiquer avec la basse de données.");
 		}
-		
 		return lignes;
 	}
 }

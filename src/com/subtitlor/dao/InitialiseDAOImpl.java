@@ -30,7 +30,7 @@ public class InitialiseDAOImpl implements InitialiseDAO {
 	}
 	
 	@Override
-	public void init() {
+	public void init() throws DAOException {
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
 		try {
@@ -41,9 +41,15 @@ public class InitialiseDAOImpl implements InitialiseDAO {
 
 			preparedStatement = connexion.prepareStatement(sql);
 			preparedStatement.executeUpdate();
+			connexion.commit();
 		} catch (SQLException | URISyntaxException | IOException ex) {
-			ex.printStackTrace();
+			if (connexion != null) {
+				try {
+					connexion.rollback();
+				} catch (SQLException e) {
+				}
+			}
+			throw new DAOException("Impossible de communiquer avec la basse de données.");
 		}
 	}
-
 }

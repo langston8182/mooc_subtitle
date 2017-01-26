@@ -13,8 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import com.subtitlor.beans.BeanException;
 import com.subtitlor.beans.Fichier;
 import com.subtitlor.beans.Ligne;
+import com.subtitlor.dao.DAOException;
 import com.subtitlor.dao.DAOFactory;
 import com.subtitlor.dao.FichierDAO;
 import com.subtitlor.dao.LigneDAO;
@@ -26,6 +28,11 @@ import com.subtitlor.utilities.SubtitlesHandler;
  * @author Cyril
  */
 public class Ajouter extends HttpServlet{
+
+	/**
+	 * Attribut en cas d'erreur.
+	 */
+	private static final String ERREUR_ATTRIBUT = "erreur";
 
 	/**
 	 * Taille de la mémoire tampon .
@@ -77,10 +84,20 @@ public class Ajouter extends HttpServlet{
             ecrireFichier(part, path);
             
             Fichier fichier = new Fichier();
-    		fichier.setNom(nomFichier);
+    		try {
+				fichier.setNom(nomFichier);
+			} catch (BeanException ex) {
+				req.setAttribute(ERREUR_ATTRIBUT, ex.getMessage());
+				this.getServletContext().getRequestDispatcher("/WEB-INF/ajouter.jsp").forward(req, resp);
+				return;
+			}
     		fichier.setPath(path);
     		
-    		fichierDAO.ajouter(fichier);
+    		try {
+				fichierDAO.ajouter(fichier);
+			} catch (DAOException ex) {
+				req.setAttribute(ERREUR_ATTRIBUT, ex.getMessage());
+			}
     		
     		SubtitlesHandler handler = new SubtitlesHandler(fichier.getPath());
     		List<String> sousTitres = handler.getAllSubtitles();
@@ -90,7 +107,11 @@ public class Ajouter extends HttpServlet{
     			ligne.setFichier(fichier);
     			ligne.setOriginal(sousTitre);
     			
-    			ligneDAO.ajouter(ligne);
+    			try {
+					ligneDAO.ajouter(ligne);
+				} catch (DAOException ex) {
+					req.setAttribute(ERREUR_ATTRIBUT, ex.getMessage());
+				}
     		}
 		}
 		this.getServletContext().getRequestDispatcher("/WEB-INF/accueil.jsp").forward(req, resp);

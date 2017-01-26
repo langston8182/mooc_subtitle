@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.subtitlor.beans.BeanException;
 import com.subtitlor.beans.Fichier;
 
 /**
@@ -32,7 +33,7 @@ public class FichierDAOImpl implements FichierDAO {
 	}
 	
 	@Override
-	public void ajouter(Fichier fichier) {
+	public void ajouter(Fichier fichier) throws DAOException {
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
 		
@@ -43,18 +44,24 @@ public class FichierDAOImpl implements FichierDAO {
 			preparedStatement.setString(2, fichier.getPath());
 			
 			preparedStatement.executeUpdate();
-			
 			ResultSet cles = preparedStatement.getGeneratedKeys();
 			if (cles.next()) {
 				fichier.setId((int) cles.getObject(1));
 			}
+			connexion.commit();
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			if (connexion != null) {
+				try {
+					connexion.rollback();
+				} catch (SQLException e) {
+				}
+			}
+			throw new DAOException("Impossible de communiquer avec la basse de données.");
 		}
 	}
 
 	@Override
-	public List<Fichier> lister() {
+	public List<Fichier> lister() throws DAOException, BeanException {
 		List<Fichier> fichiers = new ArrayList<>();
 		
 		Connection connexion = null;
@@ -78,14 +85,16 @@ public class FichierDAOImpl implements FichierDAO {
 				fichier.setPath(path);
 			}
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			throw new DAOException("Impossible de communiquer avec la basse de données.");
+		} catch (BeanException ex) {
+			throw new BeanException(ex);
 		}
 		
 		return fichiers;
 	}
 
 	@Override
-	public Fichier recuperer(int id) {
+	public Fichier recuperer(int id) throws DAOException, BeanException {
 		Fichier fichier = null;
 		
 		Connection connexion = null;
@@ -107,7 +116,9 @@ public class FichierDAOImpl implements FichierDAO {
 				fichier.setPath(path);
 			}
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			throw new DAOException("Impossible de communiquer avec la basse de données.");
+		} catch (BeanException ex) {
+			throw new BeanException(ex);
 		}
 		
 		return fichier;

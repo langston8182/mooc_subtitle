@@ -26,7 +26,7 @@
 							class="btn btn-xs btn-info"
 							onclick='window.location.href="edit?id=${fichier.id}"'><c:out
 									value="Editer" /></span> <span class="btn btn-xs btn-info"
-							onclick='window.location.href="export?id=${id}"'>Exporter</span>
+							onclick='window.location.href="export?id=${fichier.id}"'>Exporter</span>
 						</span>
 					</div>
 				</c:forEach>

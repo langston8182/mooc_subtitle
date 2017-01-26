@@ -11,3 +11,9 @@
   </div>
 </nav>
 <%@ page pageEncoding="UTF-8"%>
+<c:if test="${!empty erreur }">
+	<div class="alert alert-danger alert-dismissable">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		${erreur }
+	</div>
+</c:if>
